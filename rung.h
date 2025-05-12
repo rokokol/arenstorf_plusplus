@@ -17,9 +17,13 @@ private:
     inline static double t = 0; // Почему не сбрасывается при создании нового объекта?
     double prev_t = t;
     double error{};
-    double h = 0.0001;
+    double global_error{};
+    double global_error_x{};
+    double global_error_y{};
     double hmin = 1. / 100'000;
     double hmax = 1. / 1'000;
+    double h = 0.0001;
+    const double M = 1 - m;
     double emin;
     double emax;
     __m256d current_point;
@@ -64,6 +68,7 @@ public:
         }
 
         current_point = res;
+        global_error += error * h;
 
         if (std::abs(prev_t - t) > 1. / 20) {
             alignas(32) double res_arr[4];
@@ -85,18 +90,29 @@ public:
         plt::xlim(-2, 2);
         plt::ylim(-2, 2);
 
-        plt::plot({0}, {0}, {{"marker", "o"}, {"markersize", "4"}, {"color", "red"}});
-        plt::plot({1}, {0}, {{"marker", "o"}, {"markersize", "10"}, {"color", "blue"}});
+        plt::plot(
+            {0}, {0}, {{"marker", "o"}, {"markersize", std::to_string(m * 20)}, {"color", "red"}});
+        plt::plot(
+            {1}, {0}, {{"marker", "o"}, {"markersize", std::to_string(M * 20)}, {"color", "blue"}});
         plt::plot({x_list.back()}, {y_list.back()}, "xk");
         plt::plot(x_list, y_list, "--");
 
         plt::plot(
             std::vector<double>{0.0},
             std::vector<double>{0.0},
-            {{"linestyle", "None"}, {"marker", "None"}, {"label", std::format("error {:.6f}", error)}});
+            {{"linestyle", "None"},
+             {"marker", "None"},
+             {"label", std::format("error: {:.6f}", error)}});
+
+        plt::plot(
+            std::vector<double>{0.0},
+            std::vector<double>{0.0},
+            {{"linestyle", "None"},
+             {"marker", "None"},
+             {"label", std::format("global error: {:.10f}", global_error)}});
 
         plt::legend();
-        plt::pause(50 * h);
+        plt::pause(h);
     }
 
 private:
@@ -109,7 +125,6 @@ private:
         const double y = input_arr[1];
         const double dx = input_arr[2]; // v1
         const double dy = input_arr[3]; // v2
-        const double M = 1 - m;
 
         alignas(32) double res[4];
         res[0] = dx;
@@ -176,6 +191,8 @@ private:
         );
 
         errors = _mm256_and_pd(errors, mask);
+        double error_list[4];
+        _mm256_store_pd(error_list, errors);
 
         __m128d low = _mm256_castpd256_pd128(errors);
         __m128d high = _mm256_extractf128_pd(errors, 1);
