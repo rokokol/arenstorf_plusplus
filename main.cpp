@@ -19,10 +19,17 @@ void measure_execution_time(F &&func, Args &&...args)
 
 void merson_solve()
 {
-    rung test{};
-    while(true) {
-        test.make_step();
-    }
+    std::vector<satellite<>> models{
+        satellite<>(0.994, 0.0, 0.0, -2.031732629557337),
+        satellite<>(0.994, 0.0, 0.0, -2.00158510637908252240537862224),
+        satellite<>(1.2, 0.0, 0.0, -1.5),
+        // satellite<>(0.8, 0.0, 0.0, 2.5),
+        // satellite<>(0.994, 0.1, 0.2, -2),
+    };
+    rung test(models); // 0.994, 0.0, 0.0, -2.031732629557337, 0.05, 0.1
+    while (test.make_steps());
+    // printf("colission proba: %.16f\n", test.check_collisions(0.1)[0][0]);
+    test.plot_satellites();
 }
 
 int main()

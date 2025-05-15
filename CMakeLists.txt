@@ -4,7 +4,8 @@ project(matplotlibcpp_test)
 set(CMAKE_CXX_STANDARD 23)
 add_compile_options(-mavx)
 add_executable(matplotlibcpp_test main.cpp
-        rung.h)
+        rung.h
+        satellite.h)
 
 
 #=====//НУЖНО ДЛЯ РАБОТЫ С <matplotlibcpp.h>//=====
