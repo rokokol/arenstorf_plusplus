@@ -1,4 +1,0 @@
-/home/rokoko/.local/share/JetBrains/Toolbox/apps/clion/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/home/rokoko/.local/share/JetBrains/Toolbox/apps/clion/bin/ninja/linux/x64/ninja -G Ninja -S /home/rokoko/CLionProjects/matplotlibcpp_test -B /home/rokoko/CLionProjects/matplotlibcpp_test/cmake-build-release
--- Configuring done (0.5s)
--- Generating done (0.0s)
--- Build files have been written to: /home/rokoko/CLionProjects/matplotlibcpp_test/cmake-build-release
